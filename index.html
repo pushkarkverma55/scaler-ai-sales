@@ -511,6 +511,8 @@ function render() {
     var mt = document.getElementById('mT'); if (mt) mt.onclick = function() { st({ inputMode: 'transcript' }); };
     var ma = document.getElementById('mA'); if (ma) ma.onclick = function() { st({ inputMode: 'audio' }); };
     var rp = document.getElementById('runPostBtn'); if (rp) rp.onclick = function() { runPostCall(); };
+    var ta = document.getElementById('transcriptTA'); if (ta) ta.oninput = function(e) { LD[S.sel].transcript = e.target.value; };
+    var pa = document.getElementById('profileTA'); if (pa) pa.oninput = function(e) { LD[S.sel].profile = e.target.value; };
     var ad = document.getElementById('adrop'), ai2 = document.getElementById('ainp');
     if (ad && ai2) { ad.onclick = function() { ai2.click(); }; ai2.onchange = function(e) { if (e.target.files[0]) st({ audioFile: e.target.files[0] }); }; }
   }
@@ -645,9 +647,12 @@ function rPostCall(L) {
       '<div id="adrop" style="background:var(--s2);border:2px dashed var(--bd2);border-radius:8px;padding:24px;text-align:center;cursor:pointer;color:var(--mt)">' +
       (S.audioFile ? '<span style="color:var(--grn)">&#10003; ' + S.audioFile.name + '</span>' : 'Click to upload .mp3, .wav, .m4a') +
       '</div><input type="file" id="ainp" accept="audio/*" style="display:none"></div>' :
-      '<div class="field"><label class="lbl">Call Transcript — ' + L.name + '</label>' +
-      '<div style="background:var(--s2);border-radius:8px;padding:12px;font-size:12px;color:var(--mt2);line-height:1.75;max-height:150px;overflow-y:auto;white-space:pre-line;font-family:JetBrains Mono,monospace">' + L.transcript + '</div>' +
-      '<div style="font-size:11px;color:var(--mt);margin-top:6px">Using loaded transcript &middot; paste your own above if needed</div></div>') +
+      '<div class="field"><label class="lbl">Lead Profile</label>' +
+      '<textarea class="inp" id="profileTA" rows="3" style="font-size:12px;line-height:1.65;font-family:JetBrains Mono,monospace">' + L.profile + '</textarea>' +
+      '</div>' +
+      '<div class="field"><label class="lbl">Call Transcript</label>' +
+      '<textarea class="inp" id="transcriptTA" rows="8" style="font-size:12px;line-height:1.75;font-family:JetBrains Mono,monospace">' + L.transcript + '</textarea>' +
+      '<div style="font-size:11px;color:var(--mt);margin-top:6px">&#9998; Fully editable — paste any profile or transcript to generate a new document</div></div>') +
     '</div>' +
     (S.error ? '<div class="err">' + S.error + '</div>' : '') +
     '<button class="btn b-blue b-full" id="runPostBtn">&#9889; Generate Lead Trust Document</button>' +
