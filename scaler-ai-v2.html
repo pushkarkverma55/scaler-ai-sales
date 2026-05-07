@@ -1,0 +1,710 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scaler AI — Sales Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#09090F;--s1:#0F1018;--s2:#15161F;--s3:#1C1D28;--bd:#22233A;--bd2:#2E3050;--tx:#E2E4F0;--mt:#5A5E7A;--mt2:#8B8FAA;--blue:#3E6BFF;--blue2:#6088FF;--bdim:#3E6BFF1A;--grn:#22C55E;--wa:#25D366;--red:#EF4444}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:14px}
+button,input,textarea{font-family:inherit}a{text-decoration:none;color:inherit}
+/* NAV */
+.nav{height:54px;background:var(--s1);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 18px;gap:2px;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:8px;margin-right:20px;flex-shrink:0}
+.logo{width:30px;height:30px;background:var(--blue);border-radius:7px;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
+.bname{font-weight:700;font-size:15px}.bname em{font-style:normal;color:var(--blue)}
+.tabs{display:flex;flex:1;gap:2px;overflow-x:auto}
+.tab{padding:6px 13px;border-radius:7px;font-size:13px;font-weight:500;color:var(--mt2);background:none;border:none;cursor:pointer;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--tx);background:var(--s2)}.tab.on{color:var(--blue);background:var(--bdim);font-weight:600}
+.tab.done-tab{color:var(--grn)}.tab.done-tab.on{color:var(--grn);background:#22C55E1A}
+.nr{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.dot{width:7px;height:7px;border-radius:50%}.dot.on{background:var(--grn);box-shadow:0 0 6px var(--grn)}.dot.off{background:var(--mt)}
+.stgbtn{width:32px;height:32px;background:var(--s2);border:1px solid var(--bd);border-radius:7px;display:grid;place-items:center;color:var(--mt2);font-size:15px;cursor:pointer;transition:all .15s}
+.stgbtn:hover{color:var(--tx);border-color:var(--bd2)}
+/* DRAWER */
+.ov{position:fixed;inset:0;background:#00000090;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}.ov.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;right:0;width:330px;height:100%;background:var(--s1);border-left:1px solid var(--bd);z-index:201;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);padding:22px;overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+.dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.dh h2{font-size:16px;font-weight:700}
+.xbtn{width:30px;height:30px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;display:grid;place-items:center;color:var(--mt2);font-size:16px;cursor:pointer}
+/* LAYOUT */
+.main{padding:22px 18px;max-width:680px;margin:0 auto}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:19px}
+.inner{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:15px}
+/* FORMS */
+.field{margin-bottom:15px}.field:last-child{margin-bottom:0}
+label.lbl{display:block;font-size:10px;color:var(--mt2);margin-bottom:7px;text-transform:uppercase;letter-spacing:1.5px;font-family:'JetBrains Mono',monospace}
+.inp{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:10px 13px;color:var(--tx);font-size:14px;outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--blue)}textarea.inp{resize:vertical;line-height:1.65}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:8px;padding:9px 17px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.b-blue{background:var(--blue);color:#fff}.b-blue:hover:not(:disabled){background:var(--blue2)}
+.b-full{width:100%;padding:13px;font-size:14px}.b-sm{padding:7px 12px;font-size:12px;border-radius:7px}
+.b-ghost{background:var(--s2);color:var(--mt2);border:1px solid var(--bd)}.b-ghost:hover{color:var(--tx)}
+.b-grn{background:var(--grn);color:#fff}.b-wa{background:var(--wa);color:#fff}
+.b-out{background:transparent;color:var(--mt2);border:1px solid var(--bd)}
+.brow{display:flex;gap:9px;margin-top:13px}
+/* LEADS */
+.lgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:16px}
+.lcard{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;position:relative}
+.lcard:hover{border-color:var(--bd2)}.lcard.sel{border-color:var(--blue);background:var(--bdim)}
+.stag{position:absolute;top:9px;right:9px;background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace}
+.lbadge{display:inline-block;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;margin-bottom:9px}
+.lname{font-weight:700;font-size:15px;margin-bottom:3px}.lrole{font-size:10px;color:var(--mt2);font-family:'JetBrains Mono',monospace;margin-bottom:10px;line-height:1.4}
+.prow{display:flex;align-items:center;gap:6px;border-top:1px solid var(--bd);padding-top:10px;margin-top:8px}
+.piinp{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:6px 9px;font-size:11px;color:var(--tx);outline:none;font-family:'JetBrains Mono',monospace}
+.piinp:focus{border-color:var(--blue)}
+/* AGENTS */
+.arow{display:flex;align-items:center;gap:13px;padding:12px 16px;background:var(--s1);border-radius:9px;border:1px solid var(--bd);margin-bottom:8px;transition:border-color .3s}
+.arow.running{border-color:var(--blue)}.arow.done{border-color:var(--grn)}.arow.skip{opacity:.4}
+.aname{font-weight:600;font-size:14px}.adesc{font-size:11px;color:var(--mt);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.spin{display:inline-block;animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+/* CONTENT */
+.pg-title{font-size:20px;font-weight:700;margin-bottom:4px}.pg-sub{font-size:13px;color:var(--mt2);margin-bottom:20px}
+.nbubble{background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:14px;font-size:13px;line-height:1.9;color:var(--mt2);white-space:pre-line}
+.phead{font-size:18px;font-weight:700;line-height:1.35;margin-bottom:10px}
+.pintro{font-size:13px;color:var(--mt2);line-height:1.75;margin-bottom:13px}
+.qb{border-left:3px solid var(--blue);padding-left:11px;margin-bottom:12px}
+.qlbl{font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.qans{font-size:12px;color:var(--mt2);line-height:1.65}
+.psln{font-size:12px;color:var(--mt);font-style:italic;border-top:1px solid var(--bd);padding-top:10px;margin-top:7px}
+/* DELIVER */
+.ditem{display:flex;align-items:center;gap:13px;padding:16px 18px;background:var(--s1);border:1px solid var(--bd);border-radius:10px;margin-bottom:9px;width:100%;color:var(--tx);text-align:left;cursor:pointer;transition:border-color .15s}
+.ditem:hover:not(:disabled){border-color:var(--bd2)}.ditem:disabled{opacity:.4;cursor:not-allowed}
+.dico{font-size:22px;width:30px;text-align:center}.dtitle{font-weight:600;font-size:14px}
+.dsub{font-size:11px;color:var(--mt);margin-top:2px;font-family:'JetBrains Mono',monospace}
+/* MISC */
+.sban{background:var(--s3);border:1px solid var(--bd2);border-radius:7px;padding:8px 13px;font-size:11px;color:var(--mt2);display:flex;align-items:center;gap:7px;margin-bottom:13px;font-family:'JetBrains Mono',monospace}
+.appbar{border-top:1px solid var(--bd);padding-top:14px;margin-top:14px}
+.err{background:#EF444412;border:1px solid #EF444433;border-radius:8px;padding:10px 13px;font-size:12px;color:var(--red);margin-top:10px}
+.divhr{height:1px;background:var(--bd);margin:14px 0}
+.mrow{display:flex;gap:7px;margin-bottom:13px}
+.mbtn{flex:1;padding:9px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;font-size:13px;color:var(--mt2);cursor:pointer;transition:all .15s}
+.mbtn.on{background:var(--bdim);border-color:var(--blue);color:var(--blue);font-weight:600}
+.flow-steps{display:flex;align-items:center;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.flow-step{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--mt);display:flex;align-items:center;gap:6px}
+.flow-step.active{color:var(--blue);font-weight:600}.flow-step.done{color:var(--grn)}
+.flow-arrow{color:var(--mt);font-size:10px}
+.sending-overlay{position:fixed;inset:0;background:#00000088;z-index:300;display:flex;align-items:center;justify-content:center}
+.sending-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:28px 36px;text-align:center}
+.sending-box p{font-size:14px;color:var(--mt2);margin-top:8px}
+.info-box{background:var(--bdim);border:1px solid #3E6BFF33;border-radius:8px;padding:10px 13px;font-size:12px;color:#6088FF;margin-bottom:14px}
+@media(max-width:570px){.lgrid{grid-template-columns:1fr}.main{padding:14px 12px}.tabs{gap:1px}.tab{padding:6px 9px;font-size:12px}}
+</style>
+</head>
+<body><div id="root"></div>
+<script>
+// ── SAMPLE DATA ──────────────────────────────────────────────────────────────
+const SMP = {
+  rohan: {
+    nudge: `🔵 *Rohan Sharma — TCS SWE, 4 YoE*
+
+📌 *Who he is:* 4 years banking projects at TCS (HDFC, Citi). Not excited about the work. Cleared AWS cert on his own time — already investing in the pivot. Core anxiety: am I already too late for AI?
+
+💡 *What'll land:*
+• 4 years of production systems = head start, not a liability in AI
+• The jump isn't TCS → 16L service. It's product co at 22-28L+
+• He wants to BUILD LLMs — RAG, agents, evals. Lead with applied curriculum.
+
+⚡ *Objections:*
+• "Why not Coursera?" → Scaler gets you to shipping. Coursera gets you to understanding.
+• "What salary jump?" → Be honest about range, don't fabricate numbers.
+• "Is it practical?" → RAG, agents, evals are core modules. Not electives.
+
+🎯 *Open with:* "Rohan, you cleared AWS on your own time — you're already moving. Let's talk about closing the gap to where AI engineering roles need you."
+
+_AWS timing inferred. Salary aspiration inferred._`,
+    doc: {
+      headline: "Rohan, 4 years of production systems isn't a liability in AI — it's the head start most candidates don't have.",
+      intro: "You asked the right questions on our call. The Coursera comparison, the salary math, the practical depth — these aren't objections, they're exactly the filters a smart buyer should apply. Let me answer each one directly.",
+      qa_sections: [
+        { question: "Why pay ₹3.5L when Andrew Ng has the same stuff on Coursera?", answer: "Andrew Ng teaches you to understand AI. Scaler trains you to ship it. The difference: projects reviewed by engineers who've built production systems, a peer cohort you can build with, and mentorship on the problems that actually block you. Coursera gets you to 'I understand the concept'. Scaler gets you to 'I can build this in a codebase'.", evidence: "Curriculum covers RAG pipelines, LLM application architecture, agents, and production evals — built into hands-on projects, not lectures." },
+        { question: "What salary jump does someone at 14 LPA at TCS realistically get?", answer: "The honest answer: it depends on where you land. The floor at a product company for a well-prepared AI engineering candidate with 4 YoE is materially higher than 16L. Candidates who see the biggest jumps speak the language of AI systems in interviews — that's what this program builds.", evidence: "Service to product company move — typically a significant CTC change at your experience level." },
+        { question: "Is the program on RAG, agents, evals — or more theoretical ML?", answer: "RAG, agents, and evals are core modules — not electives. You'll build retrieval systems, deploy LLM-powered applications, and learn evaluation frameworks that mirror how production AI teams actually work.", evidence: "AI Engineering track is built around applied deliverables: you ship working systems, not slide decks." }
+      ],
+      outcomes_for_them: "For someone with your background — 4 years building systems for HDFC and Citi-scale clients — the gap to AI engineering roles isn't as wide as you think. You already understand scale, reliability, and production constraints. What's missing is the AI layer: retrieval pipelines, model evaluation, agent architectures. That's exactly what this program closes.",
+      next_step_cta: "The entrance test takes about 45 minutes. It benchmarks where you are — it doesn't screen you out. Take it this week while the thinking is fresh.",
+      ps_line: "The AWS cert wasn't random — you knew you needed to move. This is the next step of that same decision."
+    }
+  },
+  karthik: {
+    nudge: `🟢 *Karthik Iyer — Google Sr SWE, 9 YoE, IIT Madras*
+
+📌 *Who he is:* IIT → Google Search infra → open source contributor. Not here for basics. Stress-testing whether there's genuine applied depth before committing. High trust in papers, low trust in courses.
+
+💡 *What'll land:*
+• Peer cohort is the real product for him — not curriculum
+• "Shipped in production" is his instructor filter. Lead with that.
+• Value isn't new info — it's structured applied implementation with people who push back
+
+⚡ *Objections:*
+• "What can't I get from papers?" → Structured applied implementation, cross-domain exposure
+• "Will cohort be at my level?" → Senior-skewed, not exclusively Google-level — be honest
+• "Are instructors practitioners?" → Only affirm what you can verify
+
+🎯 *Open with:* "Karthik, I'll be upfront — you've probably forgotten more ML than most courses teach. The real question is what structured applied depth looks like for someone at your level."
+
+_High confidence. Motivations partially inferred._`,
+    doc: {
+      headline: "Karthik, you're not here to learn AI basics — so let's talk about what 9 years at Google doesn't automatically give you.",
+      intro: "You were clear on the call: you can read the papers, you have internal training, you're not looking for a beginner course. Here's my honest take on where Scaler adds genuine value for someone at your level — and where it doesn't.",
+      qa_sections: [
+        { question: "What would I actually learn that I can't get from papers or Google's internal training?", answer: "Papers give you theory. Internal training gives you what Google needs. Neither gives you structured time to implement applied AI systems outside your current stack — with people from different domains pushing back on your assumptions. The value isn't new information. It's forcing functions: projects you have to ship, instructors who challenge your choices, a cohort with diverse applied perspectives.", evidence: "Structured implementation of RAG systems, agent architectures, and production evaluation frameworks across domains different from Search infra." },
+        { question: "Is the cohort going to be at my level?", answer: "Honest answer: senior engineers, not exclusively Google-level. What makes it valuable for you isn't finding peers who match your seniority — it's engaging with engineers solving different problems at a high level. Cross-domain exposure is more interesting than another Search infra engineer.", evidence: "Senior-skewed cohort across product companies. The value is cross-domain, not peer equivalence." },
+        { question: "Are instructors people who've actually shipped production AI systems?", answer: "The instructors on the AI Engineering track have industry backgrounds, not academic. I won't fabricate credentials — but I'd rather you speak directly with one before deciding. That's a fair ask and we can arrange it.", evidence: "Worth a direct conversation with the program lead before committing at this investment level." }
+      ],
+      outcomes_for_them: "For someone at your level, the ROI isn't 'learn AI from scratch'. It's structured exposure to applied implementation patterns you haven't had reason to build yet, with practitioners who'll push back on your design decisions. Hard to get from papers alone.",
+      next_step_cta: "The entrance test will be straightforward for you — but worth taking because it places you accurately in the cohort structure. 45 minutes, whenever works.",
+      ps_line: "You said 'I just want to make sure I'm not missing anything' — that's the most honest framing I've heard from a senior engineer. 45 minutes to find out."
+    }
+  },
+  meera: {
+    nudge: `🟡 *Meera Patel — Final Year B.Tech, Tier-3, Fresher*
+
+📌 *Who she is:* Smart, ambitious, scared. Parents are the real decision-makers. Financial math is genuinely hard (₹3.5L > family annual income). She wants to say yes — needs help making the case to her family.
+
+💡 *What'll land:*
+• Don't sell her — help her sell her parents. Give her language to take home.
+• Financing is critical. Lead with monthly EMI number, not total cost.
+• Reframe the entrance test: diagnostic, not a gate.
+
+⚡ *Objections:*
+• "Can you guarantee a job?" → Be honest: no guarantee, but strong placement support
+• "How do people afford ₹3.5L?" → ISA + EMI — give her a monthly number
+• "What if I fail the test?" → Test shows where you are, not whether you belong
+
+🎯 *Open with:* "Meera, I could hear you already know what you want. The question is how to make the case to your family — let's work through that together."
+
+_High confidence on financial anxiety. Exact income inferred._`,
+    doc: {
+      headline: "Meera, you already know what you want. Let's make it possible.",
+      intro: "You were honest with me: your parents want the government job, ₹3.5L feels impossible, and you're nervous about the test. I want to address each of these directly — not with sales talk, but with the information you need to make this decision with your family.",
+      qa_sections: [
+        { question: "Can you guarantee I'll get a job after this?", answer: "No program can guarantee placement — anyone who says otherwise isn't being straight with you. What Scaler offers: structured placement support, mock interviews, a network of hiring companies, and a track record of fresher placements at product companies. The honest framing for your parents: Scaler doesn't guarantee a job, but it systematically improves your odds at the companies you actually want to be at.", evidence: "Placement program includes dedicated support, 200+ hiring partners, and a fresher track for candidates from non-tier-1 colleges." },
+        { question: "₹3.5L is more than what my family earns in a year. How does anyone afford this?", answer: "Most students don't pay ₹3.5L upfront. The Income Share Agreement means you pay nothing until you're placed and earning above a threshold. There are also EMI options that break it into manageable monthly payments. The question your parents should be asking is: what's the monthly number, not the total?", evidence: "ISA: pay nothing upfront, repay a percentage of salary only after placement. EMI options also available." },
+        { question: "What if I can't clear the entrance test?", answer: "The entrance test isn't designed to reject you. It places you accurately and identifies where you need support. If you don't clear it first attempt, there's a preparation path. The test measures your current state, not your potential. Many strong graduates from Tier-3 colleges didn't clear it first time.", evidence: "Test is diagnostic, not a gate. Prep resources available, retakes possible." }
+      ],
+      outcomes_for_them: "For a fresher from a Tier-3 college, the biggest challenge isn't ability — it's access. Access to the right interview prep, the right network, and the signal to companies that you're serious. Scaler's structured environment gives you all three in a way self-study rarely does.",
+      next_step_cta: "Take the entrance test this week — it starts the process and gives you a real number to take home to your parents. That's a much stronger position than a hypothetical.",
+      ps_line: "You turned down nothing yet. Taking the test just means you'll know what's actually possible."
+    }
+  }
+};
+
+// ── PDF BUILDERS ─────────────────────────────────────────────────────────────
+function buildLeadPDF(doc, name, acc) {
+  const qs = doc.qa_sections.map(s =>
+    `<div class="sec"><div class="qlbl">You asked</div><div class="qtxt">"${s.question}"</div><div class="ans">${s.answer}</div>${s.evidence ? `<div class="ev">&#128204; ${s.evidence}</div>` : ''}</div>`
+  ).join('');
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;color:#1a1a2e;background:#fff}.page{max-width:760px;margin:0 auto;padding:50px}.bar{height:5px;background:linear-gradient(90deg,${acc},${acc}99);border-radius:3px;margin-bottom:38px}.hdr{display:flex;justify-content:space-between;padding-bottom:22px;border-bottom:2px solid #f0f0f6;margin-bottom:28px}.brand{font-family:'Playfair Display',serif;font-size:23px;color:${acc}}.bsub{font-size:11px;color:#aaa;margin-top:3px}.forbox{text-align:right;font-size:12px;color:#999}.forbox strong{color:#333;font-size:13px;display:block;margin-top:2px}h1{font-family:'Playfair Display',serif;font-size:28px;line-height:1.3;color:#1a1a2e;margin-bottom:13px}.intro{font-size:15px;line-height:1.8;color:#555;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #f0f0f4}.sec{margin-bottom:20px;padding:18px;background:#f8f9ff;border-radius:6px;border-left:4px solid ${acc}}.qlbl{font-size:10px;font-weight:600;color:${acc};text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px}.qtxt{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:10px;font-style:italic}.ans{font-size:14px;line-height:1.78;color:#333;margin-bottom:10px}.ev{font-size:12px;color:#666;background:#fff;padding:8px 11px;border-radius:4px;border:1px solid #e5e5f0}.outcomes{background:#1a1a2e;color:#fff;padding:24px;border-radius:8px;margin:26px 0}.outcomes h2{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:10px}.outcomes p{font-size:14px;line-height:1.78;opacity:.85}.cta{background:linear-gradient(135deg,${acc},${acc}cc);color:#fff;padding:26px;border-radius:8px;text-align:center;margin:20px 0}.cta p{font-size:14px;line-height:1.7;margin-bottom:13px;opacity:.95}.cta a{background:#fff;color:${acc};font-weight:700;padding:11px 22px;border-radius:6px;text-decoration:none;font-size:13px;display:inline-block}.ps{font-size:13px;color:#777;font-style:italic;border-top:1px solid #eee;padding-top:14px;margin-top:18px}.ftr{text-align:center;font-size:11px;color:#bbb;margin-top:34px;padding-top:12px;border-top:1px solid #f0f0f0}</style></head><body><div class="page"><div class="bar"></div><div class="hdr"><div><div class="brand">Scaler</div><div class="bsub">scaler.com</div></div><div class="forbox">Prepared for<strong>${name}</strong></div></div><h1>${doc.headline}</h1><div class="intro">${doc.intro}</div>${qs}<div class="outcomes"><h2>What this path looks like for you</h2><p>${doc.outcomes_for_them}</p></div><div class="cta"><p>${doc.next_step_cta}</p><a href="https://scaler.com/test">Take the Entrance Test &#8594;</a></div><div class="ps">P.S. ${doc.ps_line}</div><div class="ftr">Scaler Academy &middot; scaler.com &middot; Prepared for ${name}</div></div></body></html>`;
+}
+
+function buildBDAPDF(nudge, lead) {
+  const L = LD[lead];
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;color:#1a1a2e;background:#fff}.page{max-width:760px;margin:0 auto;padding:50px}.bar{height:5px;background:linear-gradient(90deg,${L.acc},${L.acc}99);border-radius:3px;margin-bottom:38px}.hdr{display:flex;justify-content:space-between;padding-bottom:22px;border-bottom:2px solid #f0f0f6;margin-bottom:28px}.brand{font-family:'Playfair Display',serif;font-size:23px;color:${L.acc}}.bsub{font-size:11px;color:#aaa;margin-top:3px}.tag{background:${L.bBg};color:${L.bC};font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px}.forbox{text-align:right;font-size:12px;color:#999}.forbox strong{color:#333;font-size:13px;display:block;margin-top:2px}h1{font-family:'Playfair Display',serif;font-size:24px;line-height:1.3;color:#1a1a2e;margin-bottom:6px}.sub{font-size:13px;color:#888;margin-bottom:22px}.content{background:#f8f9ff;border-radius:8px;padding:24px;border-left:4px solid ${L.acc};white-space:pre-line;font-size:14px;line-height:1.9;color:#333}.int-label{font-size:10px;font-weight:600;color:${L.acc};text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}.ftr{text-align:center;font-size:11px;color:#bbb;margin-top:34px;padding-top:12px;border-top:1px solid #f0f0f0}</style></head><body><div class="page"><div class="bar"></div><div class="hdr"><div><div class="brand">Scaler AI</div><div class="bsub">Internal Sales Intelligence</div></div><div class="forbox">Lead<strong>${L.name}</strong></div></div><div class="tag">${L.badge} &middot; ${L.role}</div><h1>Pre-Call Briefing</h1><div class="sub">Read before dialling &middot; Internal &middot; Do not share with lead</div><div class="content"><div class="int-label">Your briefing</div>${nudge}</div><div class="ftr">Scaler AI Sales Intelligence &middot; Internal use only</div></div></body></html>`;
+}
+
+// ── API ───────────────────────────────────────────────────────────────────────
+async function callC(key, sys, msg, tok) {
+  tok = tok || 2000;
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-allow-browser': 'true' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: tok, system: sys, messages: [{ role: 'user', content: msg }] })
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.error ? e.error.message : 'API error ' + r.status); }
+  return (await r.json()).content[0].text;
+}
+
+async function callCSearch(key, sys, msg) {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-allow-browser': 'true' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, system: sys, tools: [{ type: 'web_search_20250305', name: 'web_search' }], messages: [{ role: 'user', content: msg }] })
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.error ? e.error.message : 'API error ' + r.status); }
+  const data = await r.json();
+  return data.content.filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('');
+}
+
+function sj(t) { return JSON.parse(t.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/, '').trim()); }
+
+// ── PROMPTS ───────────────────────────────────────────────────────────────────
+const SCALER_CTX = 'Scaler is India\'s leading tech education company. Programs: Scaler Academy (12-month, 0-7 YoE, ~Rs3.5L), Scaler Data Science & ML, Scaler DevOps & Cloud. Key strengths: hands-on curriculum covering RAG pipelines, LLM applications, AI agents, production evals, system design — not theory. Peer cohort of senior engineers. Mentors who have shipped AI systems in production. Placement support with 200+ hiring partners including top product companies. Financing: ISA (pay nothing upfront, repay % of salary after placement) and EMI options. Entrance test: diagnostic, not a gate — retakes possible.';
+
+const IP = 'You are a sharp sales intelligence analyst at Scaler. ' + SCALER_CTX + ' Extract actionable pre-call intelligence from a lead profile. ONLY VALID JSON no markdown:\n{"name":"first name","persona_summary":"2-3 sentences on who they really are and what is driving them","key_motivations":["m1","m2"],"resonance_angles":[{"angle":"specific thing to say","why":"why it lands for this person"}],"objections":[{"objection":"their exact phrasing","handle":"sharp one-line response"}],"open_questions":["any questions visible in the profile"],"suggested_hook":"exact opening line the BDA says when lead picks up","confidence_note":"what we know vs what is inferred"}';
+
+const BP = 'You are a sharp sales coach briefing a BDA at Scaler via WhatsApp before their call. Sound like a smart teammate, not a corporate tool. Max 180 words. Line breaks and minimal emojis for scannability. Cover: who this person really is, 2-3 angles that will resonate, objections to expect with one-line handles, exact opening hook. End with one honest confidence note. Write ONLY the WhatsApp message.';
+
+const LP = 'You are writing a personalized post-call trust document for a Scaler lead. ' + SCALER_CTX + ' This MUST feel written for THIS specific person. Address their exact questions from the call. Be honest — do not fabricate specific stats. Use web search to verify any Scaler curriculum details before including them. ONLY VALID JSON no markdown:\n{"headline":"one sharp line for their exact situation","intro":"2-3 sentences showing you heard their specific situation","qa_sections":[{"question":"exact question from call","answer":"direct honest answer 4-6 sentences","evidence":"specific reasoning or curriculum detail — honest"}],"outcomes_for_them":"4-5 sentences through their background and goals","next_step_cta":"2-sentence personalized nudge to take entrance test","ps_line":"1 PS line showing genuine understanding"}';
+
+// ── LEAD DATABASE ─────────────────────────────────────────────────────────────
+const LD = {
+  rohan: {
+    id: 'rohan', name: 'Rohan Sharma', role: 'SWE @ TCS · 4 YoE',
+    acc: '#3E6BFF', badge: 'Product Switch', bBg: '#3E6BFF18', bC: '#3E6BFF', phone: '',
+    profile: 'Name: Rohan Sharma\nRole: Software Engineer TCS (SDE-2), banking clients HDFC and Citi\nExperience: 4 years, VIT Vellore B.Tech CSE 2020\nCertifications: AWS Solutions Architect (recent)\nCurrent CTC: approximately 14 LPA\nIntent: Move from service company to product company, interested in AI Engineering roles\nAnxiety: Worried about being too late for AI transition. Very ROI-conscious.',
+    transcript: 'BDA: Rohan, what\'s bringing you to Scaler?\nRohan: I\'ve been at TCS for 4 years. Banking projects. I want to move to a product company — and I keep seeing AI engineering roles and wondering if I\'m already too late.\nBDA: Not too late. Have you looked at our AI Engineering program?\nRohan: I\'ve looked. Here\'s my question — why should I pay Rs3.5L when Andrew Ng has basically the same stuff for free on Coursera? What\'s actually different?\nBDA: Good question, let me get back to you.\nRohan: Also — realistically, what salary jump does someone like me get? If I\'m going from 14 LPA at TCS to 16 at another service company, the math doesn\'t work.\nBDA: We have data on that, I\'ll share.\nRohan: One more — I want to build real LLM applications. RAG, agents, evals. Is your program on that, or is it more theoretical ML?\nBDA: We\'ll cover everything you need.'
+  },
+  karthik: {
+    id: 'karthik', name: 'Karthik Iyer', role: 'Sr SWE @ Google · 9 YoE',
+    acc: '#22C55E', badge: 'Senior Skeptic', bBg: '#22C55E18', bC: '#22C55E', phone: '',
+    profile: 'Name: Karthik Iyer\nRole: Senior Software Engineer Google (Search infrastructure 6 years). Previously Microsoft.\nEducation: IIT Madras Computer Science\nSignal: Frequent open-source contributor. High technical bar. Skeptical buyer.\nIntent: Exploring AI engineering to stay sharp. Not looking for basics.',
+    transcript: 'BDA: Karthik, thanks for your time. Tell me what got you interested in Scaler.\nKarthik: Honestly, I\'m exploring. I already work at Google. I can read the papers. I just want to make sure I\'m not missing anything on the applied side.\nBDA: Of course. What would you want to learn?\nKarthik: My real question is — what would I actually learn here that I can\'t pick up from papers or internal training?\nBDA: Our curriculum is very hands-on —\nKarthik: Also — is your cohort going to be at my level? Because if I\'m tutoring everyone, I\'m not getting value.\nBDA: We have senior folks, yeah.\nKarthik: Last one — are your instructors people who\'ve actually shipped production AI systems, or is it academic? I\'ve sat through enough academic ML.'
+  },
+  meera: {
+    id: 'meera', name: 'Meera Patel', role: 'Final Year B.Tech · Fresher',
+    acc: '#F59E0B', badge: 'High Stakes', bBg: '#F59E0B18', bC: '#F59E0B', phone: '',
+    profile: 'Name: Meera Patel\nRole: Final-year B.Tech student Tier-3 college 0 years experience\nSituation: Government job offer on table. Parents pushing her to take it.\nIntent: Wants product company career. Torn between security and ambition.\nFinancial: Rs3.5L is more than family annual income. Financing is critical path.',
+    transcript: 'BDA: Meera, tell me what\'s on your mind.\nMeera: I\'m in my final year. I got a government job offer through campus. My parents want me to take it. But I want to work at a product company. I\'m confused.\nBDA: I understand. How can we help?\nMeera: The first thing my parents are going to ask is — can you guarantee I\'ll get a job after this? Because if I don\'t, I\'ve turned down a secure government job for nothing.\nBDA: We have strong placement —\nMeera: And Rs3.5L is more than what my family earns in a year. I genuinely don\'t know how people afford this. How does that work?\nBDA: We have financing options.\nMeera: Also — I\'m nervous about your entrance test. What if I can\'t clear it? Does that mean I\'m not right for this?'
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var S = {
+  tab: 'leads',
+  showSettings: false,
+  apiKey: '',
+  openaiKey: '',
+  bdaPhone: '',
+  sel: 'rohan',
+  // Pre-call state (BDA nudge — generated from profile before the call)
+  preRunning: false,
+  preAgents: { intel: 'idle', bda: 'idle' },
+  preResults: { rohan: null, karthik: null, meera: null },
+  editingNudge: false,
+  editedNudge: '',
+  // Post-call state (lead doc — generated from transcript/audio after the call)
+  inputMode: 'transcript',
+  audioFile: null,
+  postRunning: false,
+  postAgents: { tr: 'idle', curriculum: 'idle', lead: 'idle' },
+  postResults: { rohan: null, karthik: null, meera: null },
+  // Approval
+  approved: { rohan: false, karthik: false, meera: false },
+  error: ''
+};
+
+function st(p) { Object.assign(S, typeof p === 'function' ? p(S) : p); render(); }
+function spa(k, v) { S.preAgents = Object.assign({}, S.preAgents); S.preAgents[k] = v; render(); }
+function spa2(k, v) { S.postAgents = Object.assign({}, S.postAgents); S.postAgents[k] = v; render(); }
+function agColor(s) { return s === 'done' ? 'var(--grn)' : s === 'running' ? 'var(--blue)' : s === 'error' ? 'var(--red)' : 'var(--mt)'; }
+function agIcon(s) { return s === 'done' ? '&#10003;' : s === 'running' ? '<span class="spin">&#9679;</span>' : s === 'error' ? '&#10005;' : '&#9675;'; }
+
+// ── PRE-CALL PIPELINE (BDA Nudge — no transcript needed) ──────────────────────
+async function runPreCall() {
+  if (!S.apiKey) { st({ error: 'Add Anthropic API key in Settings &#9881;' }); return; }
+  var L = LD[S.sel];
+  st({ error: '', preRunning: true, preAgents: { intel: 'idle', bda: 'idle' } });
+  try {
+    spa('intel', 'running');
+    var ir = await callC(S.apiKey, IP, 'LEAD PROFILE:\n' + L.profile);
+    var intel = sj(ir);
+    spa('intel', 'done');
+    spa('bda', 'running');
+    var nudge = await callC(S.apiKey, BP, JSON.stringify(intel, null, 2));
+    spa('bda', 'done');
+    S.preResults[S.sel] = { nudge: nudge, intel: intel };
+    st({ preRunning: false, error: '', editedNudge: nudge, tab: 'prenudge' });
+  } catch (e) {
+    st({ preRunning: false, error: e.message });
+  }
+}
+
+// ── POST-CALL PIPELINE (Lead Doc — needs transcript/audio) ────────────────────
+async function runPostCall() {
+  if (!S.apiKey) { st({ error: 'Add Anthropic API key in Settings &#9881;' }); return; }
+  var L = LD[S.sel];
+  st({ error: '', postRunning: true, postAgents: { tr: 'idle', curriculum: 'idle', lead: 'idle' } });
+  var tr = L.transcript;
+  try {
+    if (S.inputMode === 'audio' && S.audioFile) {
+      if (!S.openaiKey) throw new Error('OpenAI API key required for audio transcription — add in Settings &#9881;');
+      spa2('tr', 'running');
+      var fd = new FormData();
+      fd.append('file', S.audioFile, S.audioFile.name);
+      fd.append('model', 'whisper-1');
+      fd.append('language', 'en');
+      fd.append('prompt', 'Sales call between a BDA and a lead about a tech education program.');
+      var wRes = await fetch('https://api.openai.com/v1/audio/transcriptions', { method: 'POST', headers: { 'Authorization': 'Bearer ' + S.openaiKey }, body: fd });
+      if (!wRes.ok) { var we = await wRes.json(); throw new Error('Whisper: ' + (we.error ? we.error.message : wRes.status)); }
+      var wData = await wRes.json();
+      tr = '[Transcribed from audio]\n\n' + wData.text;
+      spa2('tr', 'done');
+    } else {
+      spa2('tr', 'skip');
+    }
+    spa2('curriculum', 'running');
+    var intel = (S.preResults[S.sel] && S.preResults[S.sel].intel) ? S.preResults[S.sel].intel : null;
+    var intelStr = intel ? JSON.stringify(intel, null, 2) : '(Intel not run — generate pre-call nudge first for richer output)';
+    var dr = await callCSearch(S.apiKey, LP, 'LEAD PROFILE:\n' + L.profile + '\n\nCALL TRANSCRIPT:\n' + tr + '\n\nPRE-CALL INTEL:\n' + intelStr + '\n\nSearch scaler.com for current curriculum and program details before writing. Ground every claim in real data.');
+    spa2('curriculum', 'done');
+    spa2('lead', 'running');
+    var doc = sj(dr);
+    spa2('lead', 'done');
+    S.postResults[S.sel] = { doc: doc };
+    st({ postRunning: false, error: '', tab: 'leaddoc' });
+  } catch (e) {
+    st({ postRunning: false, error: e.message });
+  }
+}
+
+// ── PDF + WHATSAPP HELPERS ────────────────────────────────────────────────────
+function openPreviewPDF(id) {
+  var L = LD[id];
+  var doc = (S.postResults[id] && S.postResults[id].doc) ? S.postResults[id].doc : SMP[id].doc;
+  var w = window.open('', '_blank');
+  if (w) { w.document.write(buildLeadPDF(doc, L.name, L.acc)); w.document.close(); setTimeout(function() { w.print(); }, 700); }
+}
+
+function openPreviewBDAPDF(id) {
+  var nudge = (S.preResults[id] && S.preResults[id].nudge) ? S.preResults[id].nudge : SMP[id].nudge;
+  var w = window.open('', '_blank');
+  if (w) { w.document.write(buildBDAPDF(nudge, id)); w.document.close(); setTimeout(function() { w.print(); }, 700); }
+}
+
+function showSending(msg) {
+  var el = document.createElement('div');
+  el.id = 'sendOv'; el.className = 'sending-overlay';
+  el.innerHTML = '<div class="sending-box"><div class="spin" style="font-size:24px;display:block;margin:0 auto">&#9679;</div><p>' + msg + '</p></div>';
+  document.body.appendChild(el);
+}
+function hideSending() { var el = document.getElementById('sendOv'); if (el) el.remove(); }
+
+async function htmlToBlob(html, filename) {
+  return new Promise(function(resolve, reject) {
+    var c = document.createElement('div');
+    c.style.cssText = 'position:fixed;left:-9999px;top:0;width:820px;background:white';
+    c.innerHTML = html; document.body.appendChild(c);
+    html2pdf().set({ margin: 0, filename: filename, image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'px', format: 'a4', orientation: 'portrait' } })
+      .from(c).outputPdf('blob')
+      .then(function(blob) { document.body.removeChild(c); resolve(blob); })
+      .catch(function(e) { document.body.removeChild(c); reject(e); });
+  });
+}
+
+function waLink(phone, text) {
+  var n = (phone || '').replace(/\D/g, '');
+  return n ? 'https://wa.me/' + n + '?text=' + encodeURIComponent(text) : 'https://wa.me/?text=' + encodeURIComponent(text);
+}
+
+async function uploadAndOpen(blob, filename, phone, caption) {
+  showSending('Uploading PDF...');
+  try {
+    var fd = new FormData(); fd.append('file', blob, filename);
+    var res = await fetch('https://file.io?expires=1d', { method: 'POST', body: fd });
+    var data = await res.json();
+    if (!data.success || !data.link) throw new Error('Upload failed');
+    hideSending();
+    window.open(waLink(phone, caption + '\n\n' + data.link), '_blank');
+  } catch (e) {
+    hideSending();
+    window.open(waLink(phone, caption), '_blank');
+  }
+}
+
+async function sendBDAWhatsApp(id) {
+  var L = LD[id];
+  var nudge = S.editingNudge ? S.editedNudge : ((S.preResults[id] && S.preResults[id].nudge) ? S.preResults[id].nudge : SMP[id].nudge);
+  var blob = await htmlToBlob(buildBDAPDF(nudge, id), 'BDA-Brief-' + L.name.replace(/ /g, '-') + '.pdf');
+  await uploadAndOpen(blob, 'BDA-Brief-' + L.name.replace(/ /g, '-') + '.pdf', S.bdaPhone, 'Pre-call brief for ' + L.name + ' — read before dialling.');
+}
+
+async function sendLeadWhatsApp(id, phone) {
+  var L = LD[id];
+  var doc = (S.postResults[id] && S.postResults[id].doc) ? S.postResults[id].doc : SMP[id].doc;
+  var blob = await htmlToBlob(buildLeadPDF(doc, L.name, L.acc), 'Scaler-' + L.name.replace(/ /g, '-') + '.pdf');
+  var caption = 'Hi ' + L.name.split(' ')[0] + '! Great speaking with you today.\n\nI\'ve put together answers to all your questions — specific to your situation. Here\'s the PDF.\n\nThe entrance test is your next step — 45 min, at your pace.';
+  await uploadAndOpen(blob, 'Scaler-' + L.name.replace(/ /g, '-') + '.pdf', phone || L.phone, caption);
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+var TABS = [
+  { id: 'leads', label: 'Leads' },
+  { id: 'prenudge', label: 'Pre-Call Nudge' },
+  { id: 'postcall', label: 'Post-Call' },
+  { id: 'leaddoc', label: 'Lead Doc' },
+  { id: 'deliver', label: 'Deliver' }
+];
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  var root = document.getElementById('root');
+  var L = LD[S.sel];
+  var preRes = S.preResults[S.sel];
+  var postRes = S.postResults[S.sel];
+  var nudge = (S.editingNudge ? S.editedNudge : null) || (preRes && preRes.nudge) || SMP[S.sel].nudge;
+  var doc = (postRes && postRes.doc) || SMP[S.sel].doc;
+  var isSmpNudge = !preRes;
+  var isSmpDoc = !postRes;
+  var appr = S.approved[S.sel];
+
+  var tabHtml = TABS.map(function(t) {
+    var isDone = (t.id === 'prenudge' && preRes) || (t.id === 'leaddoc' && postRes) || (t.id === 'deliver' && appr);
+    var cls = 'tab' + (S.tab === t.id ? ' on' : '') + (isDone ? ' done-tab' : '');
+    return '<button class="' + cls + '" data-tab="' + t.id + '">' + t.label + (isDone && S.tab !== t.id ? ' &#10003;' : '') + '</button>';
+  }).join('');
+
+  var content = '';
+  if (S.tab === 'leads') content = rLeads(L);
+  else if (S.tab === 'prenudge') content = rPreNudge(nudge, isSmpNudge, L);
+  else if (S.tab === 'postcall') content = rPostCall(L);
+  else if (S.tab === 'leaddoc') content = rLeadDoc(doc, isSmpDoc, L, appr);
+  else content = rDeliver(nudge, doc, L, appr, isSmpNudge, isSmpDoc);
+
+  root.innerHTML =
+    '<div class="ov' + (S.showSettings ? ' open' : '') + '" id="ov"></div>' +
+    '<div class="drawer' + (S.showSettings ? ' open' : '') + '">' +
+    '<div class="dh"><h2>&#9881; Settings</h2><button class="xbtn" id="cls">&#10005;</button></div>' +
+    '<div class="field"><label class="lbl">Anthropic API Key</label><input class="inp" type="password" id="sk" value="' + S.apiKey + '" placeholder="sk-ant-..."></div>' +
+    '<div style="font-size:11px;color:var(--mt);margin-top:-10px;margin-bottom:14px;font-family:JetBrains Mono,monospace">Never stored or sent elsewhere</div>' +
+    '<div class="divhr"></div>' +
+    '<div class="field"><label class="lbl">OpenAI Key <span style="text-transform:none;letter-spacing:0;font-weight:400">(audio transcription only)</span></label><input class="inp" type="password" id="oaik" value="' + S.openaiKey + '" placeholder="sk-..."></div>' +
+    '<div style="font-size:11px;color:var(--mt);margin-top:-10px;margin-bottom:14px">Required only for audio recording uploads</div>' +
+    '<div class="divhr"></div>' +
+    '<div class="field"><label class="lbl">BDA WhatsApp Number</label><input class="inp" id="bdaph" value="' + S.bdaPhone + '" placeholder="+91 98765 43210"></div>' +
+    '<div style="font-size:11px;color:var(--mt)">Pre-call briefings are sent here</div>' +
+    '</div>' +
+    '<div class="nav"><div class="brand"><div class="logo">S</div><div class="bname"><em>Scaler</em> AI</div></div>' +
+    '<div class="tabs">' + tabHtml + '</div>' +
+    '<div class="nr"><div class="dot ' + (S.apiKey ? 'on' : 'off') + '"></div><button class="stgbtn" id="stg">&#9881;</button></div>' +
+    '</div>' +
+    '<div class="main">' + content + '</div>';
+
+  // Events
+  document.getElementById('stg').onclick = function() { st({ showSettings: !S.showSettings }); };
+  document.getElementById('cls').onclick = function() { st({ showSettings: false }); };
+  document.getElementById('ov').onclick = function() { st({ showSettings: false }); };
+  document.getElementById('sk').oninput = function(e) { S.apiKey = e.target.value; };
+  document.getElementById('bdaph').oninput = function(e) { S.bdaPhone = e.target.value; };
+  var oaik = document.getElementById('oaik'); if (oaik) oaik.oninput = function(e) { S.openaiKey = e.target.value; };
+  document.querySelectorAll('[data-tab]').forEach(function(el) { el.onclick = function() { st({ tab: el.dataset.tab }); }; });
+
+  if (S.tab === 'leads') {
+    Object.keys(LD).forEach(function(id) {
+      var c = document.getElementById('lc-' + id);
+      if (c) c.onclick = function(e) { if (!e.target.classList.contains('piinp')) st({ sel: id }); };
+    });
+    document.querySelectorAll('.piinp').forEach(function(el) {
+      el.onclick = function(e) { e.stopPropagation(); };
+      el.oninput = function(e) { LD[el.dataset.id].phone = e.target.value; };
+    });
+    var gg = document.getElementById('goPreCall');
+    if (gg) gg.onclick = function() { st({ tab: 'prenudge' }); };
+  }
+
+  if (S.tab === 'prenudge') {
+    var eb = document.getElementById('editBtn');
+    if (eb) eb.onclick = function() {
+      if (S.editingNudge) { var ta = document.getElementById('nta'); if (ta) S.editedNudge = ta.value; }
+      st({ editingNudge: !S.editingNudge });
+    };
+    var wb = document.getElementById('waBDA');
+    if (wb) wb.onclick = function() { sendBDAWhatsApp(S.sel); };
+    var pb = document.getElementById('bdaPDF');
+    if (pb) pb.onclick = function() { openPreviewBDAPDF(S.sel); };
+    var rb = document.getElementById('runPreBtn');
+    if (rb) rb.onclick = function() { runPreCall(); };
+  }
+
+  if (S.tab === 'postcall') {
+    var mt = document.getElementById('mT'); if (mt) mt.onclick = function() { st({ inputMode: 'transcript' }); };
+    var ma = document.getElementById('mA'); if (ma) ma.onclick = function() { st({ inputMode: 'audio' }); };
+    var rp = document.getElementById('runPostBtn'); if (rp) rp.onclick = function() { runPostCall(); };
+    var ad = document.getElementById('adrop'), ai2 = document.getElementById('ainp');
+    if (ad && ai2) { ad.onclick = function() { ai2.click(); }; ai2.onchange = function(e) { if (e.target.files[0]) st({ audioFile: e.target.files[0] }); }; }
+  }
+
+  if (S.tab === 'leaddoc') {
+    var ab = document.getElementById('appBtn'); if (ab) ab.onclick = function() { S.approved[S.sel] = true; st({ tab: 'deliver' }); };
+    var pp1 = document.getElementById('pp1'); if (pp1) pp1.onclick = function() { openPreviewPDF(S.sel); };
+    var sk = document.getElementById('skipBtn'); if (sk) sk.onclick = function() { st({ tab: 'deliver' }); };
+    var pp2 = document.getElementById('pp2'); if (pp2) pp2.onclick = function() { openPreviewPDF(S.sel); };
+  }
+
+  if (S.tab === 'deliver') {
+    var pdfBtn = document.getElementById('pdfBtn'); if (pdfBtn) pdfBtn.onclick = function() { openPreviewPDF(S.sel); };
+    var bdaBtn = document.getElementById('waBDAd'); if (bdaBtn) bdaBtn.onclick = function() { sendBDAWhatsApp(S.sel); };
+    var leadBtn = document.getElementById('waLead');
+    if (leadBtn) leadBtn.onclick = function() {
+      var ph = L.phone || (document.getElementById('leadPhoneInline') && document.getElementById('leadPhoneInline').value) || '';
+      if (!ph) { alert('Add the lead\'s WhatsApp number in the Leads tab first.'); return; }
+      sendLeadWhatsApp(S.sel, ph);
+    };
+    var lpi = document.getElementById('leadPhoneInline');
+    if (lpi) lpi.oninput = function(e) { LD[S.sel].phone = e.target.value; };
+  }
+}
+
+// ── TAB RENDERERS ─────────────────────────────────────────────────────────────
+function flowIndicator(active) {
+  var steps = [
+    { id: 'leads', label: 'Leads' },
+    { id: 'prenudge', label: 'Pre-Call' },
+    { id: 'postcall', label: 'Post-Call' },
+    { id: 'leaddoc', label: 'Lead Doc' },
+    { id: 'deliver', label: 'Deliver' }
+  ];
+  return '<div class="flow-steps">' + steps.map(function(s, i) {
+    var isDone = (s.id === 'prenudge' && S.preResults[S.sel]) || (s.id === 'leaddoc' && S.postResults[S.sel]) || (s.id === 'deliver' && S.approved[S.sel]);
+    var cls = s.id === active ? 'active' : isDone ? 'done' : '';
+    return (i > 0 ? '<span class="flow-arrow">&#8594;</span>' : '') +
+      '<span class="flow-step ' + cls + '">' + s.label + (isDone ? ' &#10003;' : '') + '</span>';
+  }).join('') + '</div>';
+}
+
+function rLeads(L) {
+  return '<div class="pg-title">Lead Database</div>' +
+    '<div class="pg-sub">Select a lead &middot; add WhatsApp number per lead</div>' +
+    '<div class="lgrid">' +
+    Object.values(LD).map(function(lead) {
+      var preOk = !!S.preResults[lead.id], postOk = !!S.postResults[lead.id], apprOk = S.approved[lead.id];
+      return '<div class="lcard' + (S.sel === lead.id ? ' sel' : '') + '" id="lc-' + lead.id + '">' +
+        (S.sel === lead.id ? '<div class="stag">Selected</div>' : '') +
+        '<div class="lbadge" style="background:' + lead.bBg + ';color:' + lead.bC + '">' + lead.badge + '</div>' +
+        '<div class="lname">' + lead.name + '</div>' +
+        '<div class="lrole">' + lead.role + '</div>' +
+        (preOk ? '<div style="font-size:9px;color:var(--grn);font-family:JetBrains Mono,monospace">&#10003; Nudge generated</div>' : '') +
+        (postOk ? '<div style="font-size:9px;color:var(--grn);font-family:JetBrains Mono,monospace">&#10003; Lead doc generated</div>' : '') +
+        (apprOk ? '<div style="font-size:9px;color:var(--grn);font-family:JetBrains Mono,monospace">&#10003; Approved</div>' : '') +
+        '<div class="prow"><span>&#128241;</span><input class="piinp" data-id="' + lead.id + '" value="' + (lead.phone || '') + '" placeholder="+91 lead number"></div>' +
+        '</div>';
+    }).join('') +
+    '</div>' +
+    '<button class="btn b-blue b-sm" id="goPreCall">Start with ' + LD[S.sel].name.split(' ')[0] + ' &#8594;</button>';
+}
+
+function rPreNudge(nudge, isSmp, L) {
+  var isRunning = S.preRunning;
+  if (isRunning) {
+    return '<div style="max-width:430px">' +
+      flowIndicator('prenudge') +
+      '<div class="pg-title">Generating BDA Nudge</div>' +
+      '<div class="pg-sub">' + L.name + ' &middot; from lead profile</div>' +
+      [{ k: 'intel', ic: '&#128269;', n: 'Intel Agent', d: 'Extracting persona, motivations, objections' },
+        { k: 'bda', ic: '&#128242;', n: 'BDA Nudge Agent', d: 'Writing pre-call WhatsApp briefing' }].map(function(a) {
+        return '<div class="arow ' + S.preAgents[a.k] + '">' +
+          '<div style="font-size:20px;width:26px;text-align:center">' + a.ic + '</div>' +
+          '<div style="flex:1"><div class="aname" style="color:' + agColor(S.preAgents[a.k]) + '">' + a.n + '</div><div class="adesc">' + a.d + '</div></div>' +
+          '<div style="font-size:14px;font-weight:700;color:' + agColor(S.preAgents[a.k]) + '">' + agIcon(S.preAgents[a.k]) + '</div>' +
+          '</div>';
+      }).join('') + '</div>';
+  }
+  return '<div style="max-width:600px">' +
+    flowIndicator('prenudge') +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">' +
+    '<div><div class="pg-title">BDA Pre-Call Nudge</div><div class="pg-sub">Sent to BDA before the call &middot; no lead approval needed &middot; ' + L.name + '</div></div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+    '<button class="btn b-ghost b-sm" id="bdaPDF">&#128196; PDF</button>' +
+    '<button class="btn b-wa b-sm" id="waBDA">&#128242; Send to BDA</button>' +
+    '</div></div>' +
+    (isSmp ? '<div class="sban">&#128203; Sample — click Generate to create real AI content for ' + L.name.split(' ')[0] + '</div>' : '') +
+    '<div class="card">' +
+    (S.editingNudge ?
+      '<textarea class="inp" id="nta" rows="12" style="font-size:13px;line-height:1.9">' + nudge + '</textarea>' :
+      '<div class="nbubble">' + nudge + '</div>') +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">' +
+    '<button id="editBtn" style="background:none;border:none;color:var(--mt);font-size:11px;cursor:pointer;text-decoration:underline">' + (S.editingNudge ? 'Done editing' : 'Edit message') + '</button>' +
+    '<button class="btn b-blue b-sm" id="runPreBtn">&#9889; ' + (isSmp ? 'Generate for ' + L.name.split(' ')[0] : 'Re-generate') + '</button>' +
+    '</div></div>' +
+    (S.error ? '<div class="err">' + S.error + '</div>' : '') +
+    '<div class="info-box" style="margin-top:14px">&#128222; After sending the nudge, make the call. When done, go to <strong>Post-Call</strong> tab to upload the transcript or recording.</div>' +
+    '</div>';
+}
+
+function rPostCall(L) {
+  var isRunning = S.postRunning;
+  if (isRunning) {
+    var showTr = S.inputMode === 'audio' && S.audioFile;
+    var agents = (showTr ? [{ k: 'tr', ic: '&#127897;&#65039;', n: 'Transcription Agent', d: 'Converting audio to transcript via Whisper' }] : []).concat([
+      { k: 'curriculum', ic: '&#127757;', n: 'Curriculum Agent', d: 'Fetching live Scaler curriculum data from scaler.com' },
+      { k: 'lead', ic: '&#128196;', n: 'Lead Content Agent', d: 'Building grounded personalised trust document' }
+    ]);
+    return '<div style="max-width:430px">' +
+      flowIndicator('postcall') +
+      '<div class="pg-title">Generating Lead Document</div>' +
+      '<div class="pg-sub">' + L.name + ' &middot; post-call</div>' +
+      agents.map(function(a) {
+        return '<div class="arow ' + S.postAgents[a.k] + '">' +
+          '<div style="font-size:20px;width:26px;text-align:center">' + a.ic + '</div>' +
+          '<div style="flex:1"><div class="aname" style="color:' + agColor(S.postAgents[a.k]) + '">' + a.n + '</div><div class="adesc">' + a.d + '</div></div>' +
+          '<div style="font-size:14px;font-weight:700;color:' + agColor(S.postAgents[a.k]) + '">' + agIcon(S.postAgents[a.k]) + '</div>' +
+          '</div>';
+      }).join('') + '</div>';
+  }
+  return '<div>' +
+    flowIndicator('postcall') +
+    '<div class="pg-title">Post-Call</div>' +
+    '<div class="pg-sub">After the call — upload transcript or recording to generate the lead\'s trust document &middot; ' + L.name + '</div>' +
+    '<div class="card" style="margin-bottom:13px">' +
+    '<div class="field"><label class="lbl">Input Mode</label>' +
+    '<div class="mrow"><button class="mbtn' + (S.inputMode === 'transcript' ? ' on' : '') + '" id="mT">&#128221; Text Transcript</button>' +
+    '<button class="mbtn' + (S.inputMode === 'audio' ? ' on' : '') + '" id="mA">&#127897;&#65039; Audio Recording</button></div></div>' +
+    (S.inputMode === 'audio' ?
+      '<div class="field"><label class="lbl">Call Recording</label>' +
+      '<div id="adrop" style="background:var(--s2);border:2px dashed var(--bd2);border-radius:8px;padding:24px;text-align:center;cursor:pointer;color:var(--mt)">' +
+      (S.audioFile ? '<span style="color:var(--grn)">&#10003; ' + S.audioFile.name + '</span>' : 'Click to upload .mp3, .wav, .m4a') +
+      '</div><input type="file" id="ainp" accept="audio/*" style="display:none"></div>' :
+      '<div class="field"><label class="lbl">Call Transcript — ' + L.name + '</label>' +
+      '<div style="background:var(--s2);border-radius:8px;padding:12px;font-size:12px;color:var(--mt2);line-height:1.75;max-height:150px;overflow-y:auto;white-space:pre-line;font-family:JetBrains Mono,monospace">' + L.transcript + '</div>' +
+      '<div style="font-size:11px;color:var(--mt);margin-top:6px">Using loaded transcript &middot; paste your own above if needed</div></div>') +
+    '</div>' +
+    (S.error ? '<div class="err">' + S.error + '</div>' : '') +
+    '<button class="btn b-blue b-full" id="runPostBtn">&#9889; Generate Lead Trust Document</button>' +
+    '<div style="font-size:11px;color:var(--mt);text-align:center;margin-top:9px;font-family:JetBrains Mono,monospace">Uses web search to ground claims in real Scaler curriculum data</div>' +
+    '</div>';
+}
+
+function rLeadDoc(doc, isSmp, L, appr) {
+  return '<div style="max-width:640px">' +
+    flowIndicator('leaddoc') +
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">' +
+    '<div><div class="pg-title">Lead Trust Document</div><div class="pg-sub">BDA approval required before sending to lead &middot; ' + L.name + '</div></div>' +
+    (appr ? '<span style="font-size:13px;color:var(--grn);font-weight:600">&#10003; Approved</span>' : '') +
+    '</div>' +
+    (isSmp ? '<div class="sban">&#128203; Sample — run Post-Call tab to generate real AI content</div>' : '') +
+    '<div class="card">' +
+    '<div class="inner">' +
+    '<div class="phead" style="border-left:4px solid ' + L.acc + ';padding-left:12px">' + doc.headline + '</div>' +
+    '<div class="pintro" style="padding-left:16px;margin-top:8px">' + doc.intro + '</div>' +
+    (doc.qa_sections || []).slice(0, 3).map(function(s) {
+      return '<div class="qb" style="border-left-color:' + L.acc + '"><div class="qlbl" style="color:' + L.acc + '">You asked: ' + s.question + '</div><div class="qans">' + s.answer.slice(0, 130) + '...</div></div>';
+    }).join('') +
+    (doc.ps_line ? '<div class="psln">P.S. ' + doc.ps_line + '</div>' : '') +
+    '</div>' +
+    (!appr ?
+      '<div class="appbar"><div style="font-size:12px;color:var(--mt);text-align:center;margin-bottom:11px">Review the content above before sending to lead</div>' +
+      '<div class="brow"><button class="btn b-grn" id="appBtn">&#10003; Approve &amp; Go to Deliver</button><button class="btn b-ghost" id="pp1">Preview PDF</button><button class="btn b-out b-sm" id="skipBtn" style="flex:0">Skip</button></div></div>' :
+      '<div class="appbar" style="text-align:center"><button class="btn b-ghost b-sm" id="pp2">Preview PDF</button></div>') +
+    '</div></div>';
+}
+
+function rDeliver(nudge, doc, L, appr, isSmpNudge, isSmpDoc) {
+  var hasLeadPhone = !!(L.phone && L.phone.trim());
+  return '<div style="max-width:540px">' +
+    flowIndicator('deliver') +
+    '<div class="pg-title">Deliver</div>' +
+    '<div class="pg-sub">' + L.name + ' &middot; ' + (appr ? '&#10003; Lead doc approved' : 'Lead doc pending approval') + '</div>' +
+    (isSmpNudge || isSmpDoc ? '<div class="sban">&#128203; Showing sample content — run Pre-Call and Post-Call tabs for real AI output</div>' : '') +
+    '<button class="ditem" id="pdfBtn" style="border-color:' + L.acc + '44">' +
+    '<div class="dico">&#128196;</div><div><div class="dtitle">Open &amp; Download Lead PDF</div><div class="dsub">Opens in new tab &middot; print to save &middot; branded for ' + L.name + '</div></div></button>' +
+    '<button class="ditem" id="waBDAd" style="border-color:var(--wa)33">' +
+    '<div class="dico">&#128242;</div><div><div class="dtitle">Send BDA Nudge via WhatsApp</div><div class="dsub">Pre-call briefing &rarr; BDA ' + (S.bdaPhone ? '&middot; ' + S.bdaPhone.slice(0, 12) + '...' : '&middot; set number in &#9881; Settings') + '</div></div></button>' +
+    '<button class="ditem" id="waLead" style="border-color:' + L.acc + '33"' + (!appr ? ' disabled' : '') + '>' +
+    '<div class="dico">&#128172;</div>' +
+    '<div style="flex:1">' +
+    '<div class="dtitle">Send Lead Trust Document via WhatsApp</div>' +
+    '<div class="dsub">' + (appr ? 'Approved &middot; PDF + personalised message' : 'Approve the Lead Doc first') + '</div>' +
+    (!hasLeadPhone && appr ?
+      '<div style="margin-top:8px;display:flex;align-items:center;gap:8px">' +
+      '<input id="leadPhoneInline" class="piinp" value="" placeholder="+91 lead WhatsApp number" style="max-width:220px" onclick="event.stopPropagation()">' +
+      '</div>' : '') +
+    (hasLeadPhone && appr ? '<div style="font-size:10px;color:var(--grn);margin-top:4px;font-family:JetBrains Mono,monospace">' + L.phone + '</div>' : '') +
+    '</div></button>' +
+    '<div style="margin-top:16px"><button class="btn b-ghost b-sm" onclick="document.querySelector(\'[data-tab=leads]\').click()">&#8592; Back to Leads</button></div>' +
+    '</div>';
+}
+
+render();
+</script>
+</body></html>
